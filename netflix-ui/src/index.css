@@ -1,0 +1,132 @@
+/* ---------- Global Reset & Defaults ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  
+}
+
+
+html,
+body {
+  /* margin-left: -20px; */
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide Scrollbar but keep scroll functionality */
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ---------- Utility Flex Classes ---------- */
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.j-between {
+  justify-content: space-between;
+}
+
+.j-center {
+  justify-content: center;
+}
+
+.a-center {
+  align-items: center;
+}
+
+/* ---------- Smooth Hover Animations ---------- */
+a,
+button {
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+a:hover,
+button:hover {
+  opacity: 0.8;
+}
+
+/* ---------- Useful Utility Classes ---------- */
+.text-center {
+  text-align: center;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+.shadow {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* ---------- Fade-In Animation ---------- */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.7s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Attractive Gradient Text ---------- */
+.gradient-text {
+  background: linear-gradient(45deg, #ff4b2b, #ff416c, #ff7eb3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---------- Button Styles ---------- */
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  transition: 0.3s;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #ff4b2b, #ff416c);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* ---------- Card Styling ---------- */
+.card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 1.2rem;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.07);
+}
