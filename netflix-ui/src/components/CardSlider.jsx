@@ -111,8 +111,6 @@
 
 
 
-
-
 import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
@@ -123,65 +121,61 @@ export default React.memo(function CardSlider({ data, title }) {
   const [sliderPosition, setSliderPosition] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [maxSlides, setMaxSlides] = useState(4);
+  const [cardWidth, setCardWidth] = useState(216);
+  const [visibleCards, setVisibleCards] = useState(4);
 
   useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768;
+    const calculateDimensions = () => {
+      const width = window.innerWidth;
+      const mobile = width <= 768;
       setIsMobile(mobile);
       
-      // Calculate max slides based on screen width
-      if (window.innerWidth <= 480) {
-        setMaxSlides(6); // More slides on mobile since cards are smaller
-      } else if (window.innerWidth <= 768) {
-        setMaxSlides(5);
+      let newCardWidth, newVisibleCards;
+      
+      if (width <= 480) {
+        newCardWidth = 162; // card width + gap for mobile
+        newVisibleCards = Math.floor(width / newCardWidth);
+      } else if (width <= 768) {
+        newCardWidth = 172;
+        newVisibleCards = Math.floor(width / newCardWidth);
       } else {
-        setMaxSlides(4);
+        newCardWidth = 216; // 200px card + 16px gap
+        newVisibleCards = Math.floor((width - 100) / newCardWidth); // accounting for margins
       }
+      
+      setCardWidth(newCardWidth);
+      setVisibleCards(Math.max(1, newVisibleCards)); // Ensure at least 1 card is visible
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    calculateDimensions();
+    window.addEventListener('resize', calculateDimensions);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', calculateDimensions);
   }, []);
-
-  const getCardWidth = () => {
-    if (isMobile) {
-      return window.innerWidth <= 480 ? 162 : 172; // card width + gap
-    }
-    return 216; // 200px card + 16px gap
-  };
-
-  const getVisibleCards = () => {
-    if (isMobile) {
-      return Math.floor(window.innerWidth / getCardWidth());
-    }
-    return Math.floor((window.innerWidth - 100) / getCardWidth()); // accounting for margins
-  };
 
   const handleDirection = (direction) => {
     if (!listRef.current) return;
 
-    const cardWidth = getCardWidth();
-    const visibleCards = getVisibleCards();
     const totalSlides = Math.ceil(data.length / visibleCards) - 1;
-    
+    let newPosition = sliderPosition;
+
     if (direction === "left" && sliderPosition > 0) {
-      const moveDistance = cardWidth * visibleCards;
-      listRef.current.style.transform = `translateX(${moveDistance}px)`;
-      setSliderPosition(sliderPosition - 1);
+      newPosition = sliderPosition - 1;
+    } else if (direction === "right" && sliderPosition < totalSlides) {
+      newPosition = sliderPosition + 1;
+    } else {
+      return; // No movement needed
     }
-    
-    if (direction === "right" && sliderPosition < totalSlides) {
-      const moveDistance = -cardWidth * visibleCards;
-      listRef.current.style.transform = `translateX(${moveDistance}px)`;
-      setSliderPosition(sliderPosition + 1);
-    }
+
+    // Calculate the transform based on current position
+    const moveDistance = -newPosition * cardWidth * visibleCards;
+    listRef.current.style.transform = `translateX(${moveDistance}px)`;
+    setSliderPosition(newPosition);
   };
 
+  const totalSlides = Math.ceil(data.length / visibleCards) - 1;
   const canScrollLeft = sliderPosition > 0;
-  const canScrollRight = sliderPosition < Math.ceil(data.length / getVisibleCards()) - 1;
+  const canScrollRight = sliderPosition < totalSlides;
 
   return (
     <Container
@@ -227,10 +221,10 @@ export default React.memo(function CardSlider({ data, title }) {
       </div>
       
       {/* Mobile Scroll Indicator */}
-      {isMobile && data.length > getVisibleCards() && (
+      {isMobile && data.length > visibleCards && (
         <ScrollIndicator>
           <div className="dots">
-            {Array.from({ length: Math.ceil(data.length / getVisibleCards()) }).map((_, index) => (
+            {Array.from({ length: Math.ceil(data.length / visibleCards) }).map((_, index) => (
               <div 
                 key={index} 
                 className={`dot ${index === sliderPosition ? 'active' : ''}`}
